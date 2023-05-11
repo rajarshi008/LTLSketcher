@@ -25,8 +25,8 @@ There are a variety of arguments that one can use to run *LTLSketcher*, as liste
 
 |Argument        |Meaning
 |----------------|------------------------------
-|-i <file_name>| For specifying the name of the input file (to be located inside the `Scarlet` folder), default is *example.trace*.
-|-s <sketch> | For specifying the LTL sketch
+|-i <file_name>| For specifying the name of the input file default is *example.trace*.
+|-s <sketch>| For specifying the LTL sketch
 |-suf | For enabling the Suffix heuristic
 |-bmc | For enabling the BMC heuristic
 
