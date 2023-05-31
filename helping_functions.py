@@ -4,12 +4,28 @@ from z3 import *
 
 
 def pretty_print_dic_list(dic_list):
+    """ Prints a list of dictionaries in a nice way
+
+        Parameters
+        ----------
+        dic_list : list (of dictionaries)
+            list to be printed
+    """
+
     for dic in dic_list:
         print(dic)
 # ---------------------------------------------------------------------------------------------------
 
 
 def pretty_print_sample(sample):
+    """ Prints a sample in a more readable way
+
+        Parameters
+        ----------
+        sample : Sample
+            sample to be printed
+    """
+
     for p in sample.positive:
         print(p)
     print('----------')
@@ -19,6 +35,16 @@ def pretty_print_sample(sample):
 
 
 def build_suffix(word, pos):
+    """ Constructs and returns the suffix of an ultimately periodic word as an ultimately periodic word.
+
+        Parameters
+        ----------
+        word : Trace
+            An ultimately periodic word in its finite representation (u v^{\omega})
+        pos : int
+            The starting position of the suffix in word
+    """
+
     if pos <= word.lasso_start:
         suffix = Trace(word.vector[pos:], word.lasso_start-pos)
     else:
@@ -30,6 +56,16 @@ def build_suffix(word, pos):
 
 
 def equal(word_1, word_2):
+    """ Checks whether two ultimately periodic words are equal by unrolling them
+        to a certain length (determined by the words)
+
+        Parameters
+        ----------
+        word_1 : Trace
+
+        word_2 : Trace
+    """
+
     if word_2.lasso_start > word_1.lasso_start:     # u_2 > u_1
         return equal(word_2, word_1)
 
@@ -47,6 +83,18 @@ def equal(word_1, word_2):
 
 
 def is_true_suffix_of(word_1, word_2):
+    """ Checks whether a word is a true suffix of another word (i.e., it is a suffix but not equal).
+        It then returns the position at which the suffix starts in the original word.
+
+        Parameters
+        ----------
+        word_1 : Trace
+            Original word which is checked to contain word_"
+
+        word_2 : Trace
+            Word which is checked to be a true suffix of word_1
+    """
+
     for i in range(1, word_2.length):
         if equal(word_1, build_suffix(word_2, i)):
             return True, i
@@ -56,9 +104,18 @@ def is_true_suffix_of(word_1, word_2):
 
 
 def unroll(finitePart, lassoPart, length):
+    """ Unrolls an ultimately periodic word up to the given length
+
+        Parameters
+        ----------
+        finitePart : string
+            Finite part of the ultimately periodic word
+        lassoPart : string
+            Lasso part of the ultimately periodic word
+        length : int
+            Length to which the word is unrolled
     """
-    unrolls a ultimately periodic word up to the given length
-    """
+
     result = copy.copy(finitePart)
     while len(result) < length:
         result += lassoPart
@@ -67,14 +124,29 @@ def unroll(finitePart, lassoPart, length):
 
 
 def leastCommonMultiple(a, b):
-    """
-    calculates the least common multiple of a and b
+    """ Calculates the least common multiple of a and b
+
+        Parameters
+        ----------
+        a : int
+        b : int
     """
     return abs(a * b) // math.gcd(a, b)
 # ---------------------------------------------------------------------------------------------------
 
 
 def reduce_sample(sample):
+    """ Reduces the representation of a sample to the minimal representation.
+        This includes:
+            - Removing duplicates in the lasso (e.g., 'abab' is reduced to 'ab')
+            - Removing redundant information in the finite part (e.g., ab{aab} is reduced to {aba}
+              where {} indicates the lasso)
+
+        Parameters
+        ----------
+        sample : Sample
+            Sample to be reduced
+    """
     traces = sample.positive + sample.negative
 
     for idx, trace in enumerate(traces):
@@ -115,13 +187,39 @@ def reduce_sample(sample):
 
 
 def suc_1(prefix, lasso, pos):
+    """ Computes the successor (i.e., its position) of a suffix in the suffix heuristic
+
+        Note: This is pos + 1 except at the end of the lasso
+
+        Parameters
+        ----------
+        prefix : string
+            Finite prefix of the suffix
+        lasso : string
+            Lasso of the suffix
+        pos : int
+            Position for which the successor is supposed to be computed
+    """
+
     word = Trace(prefix + lasso, len(prefix))
     return word.nextPos(pos)
 # ---------------------------------------------------------------------------------------------------
 
 
 def suc_2(sample_entry, pos):
-    if pos < len(sample_entry["prefix"]) -1:
+    """ Computes the successor (i.e., its position) of a prefix in the suffix heuristic
+
+        Note: This successor may be in the suffix referenced by the sample_entry
+
+        Parameters
+        ----------
+        sample_entry : Dictionary
+            Representation of the prefix in the suffix heuristic
+        pos : int
+            Position in the prefix for which the successor is supposed to be computed
+    """
+
+    if pos < len(sample_entry["prefix"]) - 1:
         return sample_entry["id"], pos+1
     else:
         return sample_entry["sid"], sample_entry["startpos"]
@@ -129,12 +227,38 @@ def suc_2(sample_entry, pos):
 
 
 def FUT_1(prefix, lasso, pos):
+    """ Computes the set of all successors (i.e., their position) of a suffix in the suffix heuristic
+
+        Parameters
+        ----------
+        prefix : string
+            Finite prefix of the suffix
+        lasso : string
+            Lasso of the suffix
+        pos : int
+            Position for which the set of successors is supposed to be computed
+    """
+
     word = Trace(prefix + lasso, len(prefix))
     return word.futurePos(pos)
 # ---------------------------------------------------------------------------------------------------
 
 
 def FUT_2(sample_entry, pos, suffix_entry):
+    """ Computes the set of successors (i.e., their position) of a prefix in the suffix heuristic
+
+        Note: These successors may be in the suffix referenced by the sample_entry
+
+        Parameters
+        ----------
+        sample_entry : Dictionary
+            Representation of the prefix in the suffix heuristic
+        pos : int
+            Position in the prefix for which the successor is supposed to be computed
+        suffix_entry : Dictionary
+            Entry of the suffix_table referenced by the prefix
+    """
+
     future_positions = []
 
     for pos_p in range(pos, len(sample_entry["prefix"])):
@@ -148,12 +272,50 @@ def FUT_2(sample_entry, pos, suffix_entry):
 
 
 def BET_1(prefix, lasso, pos_1, pos_2):
+    """ Computes the set of all positions of a suffix in the suffix heuristic between the given positions
+        (including the starting position and excluding the end position)
+
+        Parameters
+        ----------
+        prefix : string
+            Finite prefix of the suffix
+        lasso : string
+            Lasso of the suffix
+        pos_1 : int
+            Starting position
+        pos_2 : int
+            End position
+    """
+
     word = Trace(prefix + lasso, len(prefix))
     return word.auxiliaryPos(pos_1, pos_2)
 # ---------------------------------------------------------------------------------------------------
 
 
 def BET_2(id_1, pos_1, id_2, pos_2, start_pos, prefix_length):
+    """ Computes the set of all positions of a prefix in the suffix heuristic between the given positions
+        (including the starting position and excluding the end position)
+
+        Note: Since the end position can be in the suffix referenced by the entry of the prefix we compare the ID's
+        of the two words to check whether this is the case or not
+
+        Parameters
+        ----------
+        id_1 : string
+            ID of the prefix
+        id_2 : string
+            ID of the word which contains the end position (this is either the same as id_1 or
+            references an entry in the suffix_table
+        pos_1 : int
+            Starting position
+        pos_2 : int
+            End position
+        start_pos : int
+            Position in the suffix at which the prefix continues
+        prefix_length : int
+            Length of the prefix
+    """
+
     between_positions = []
 
     if str(id_1) == str(id_2):
@@ -172,6 +334,14 @@ def BET_2(id_1, pos_1, id_2, pos_2, start_pos, prefix_length):
 
 
 def sample_to_tables(sample):
+    """ Transforms the given sample into the prefix- and suffix tables for the suffix heuristic
+
+        Parameters
+        ----------
+        sample : Sample
+            Sample to be transformed
+    """
+
     size = sample.num_positives + sample.num_negatives
     traces = sample.positive + sample.negative
 
@@ -370,13 +540,24 @@ def sample_to_tables(sample):
                 z["startpos"] = pos
 
     return sample_table, suffix_table
-# --------------------------------------------------------------------------------------------------- TODO
+# ---------------------------------------------------------------------------------------------------
 
 
 def construct_Sketch_from_Model(model, alphabet, id, number_of_nodes):
+    """ Recursively constructs a Sketch induced by the given model
+
+        Parameters
+        ----------
+        model : Z3.model
+            Model satisfying the set of constraints
+        alphabet : List
+            The alphabet of the sample, i.e, a list of all symbols occurring in the sample
+        id : int
+            The ID of the root node
+        number_of_nodes : int
+            The size for which a satisfying model was found
     """
-    recursively constructs a Sketch induced by the given model
-    """
+
     sketch = Sketch()
     sketch.identifier = id
 
@@ -410,13 +591,23 @@ def construct_Sketch_from_Model(model, alphabet, id, number_of_nodes):
         sketch.right = construct_Sketch_from_Model(model, alphabet, rchild, number_of_nodes)
 
     return sketch
-# --------------------------------------------------------------------------------------------------- TODO
+# ---------------------------------------------------------------------------------------------------
 
 
 def construct_Sketch_from_Model_cycle_free(rootid, model, alphabet, identifier_list):
-    """
-    recursively constructs a Sketch induced by the given model.
-    If node already exists this one is used instead
+    """ Recursively constructs a Sketch induced by the given model but for the cycle free approach
+        If node already exists this one is used instead
+
+        Parameters
+        ----------
+        model : Z3.model
+            Model satisfying the set of constraints
+        alphabet : List
+            The alphabet of the sample, i.e, a list of all symbols occurring in the sample
+        rootid : int
+            The ID of the root node
+        identifier_list : List
+            The list of ID's for which a solution was found (due to renaming this may not be the list [1, ..., n])
     """
 
     sketch_list = []
@@ -447,4 +638,3 @@ def construct_Sketch_from_Model_cycle_free(rootid, model, alphabet, identifier_l
 
     return sketch_list[identifier_list.index(rootid)]
 # ---------------------------------------------------------------------------------------------------
-

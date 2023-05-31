@@ -2,6 +2,18 @@ from helping_functions import *
 
 
 def semanticConstraints(solver, sketch, sample):
+    """ Adds the semantic constraints to the solver
+
+        Parameters
+        ----------
+        solver : Z3.Solver
+            The solver containing a conjunction of constraints defined in the paper
+        sketch : Sketch
+            The sketch for which the constraints should be defined
+        sample : Sample
+            The sample for which the constraints should be defined
+    """
+
     label = sketch.getLabel()
     node_id = sketch.identifier
     traces = sample.positive + sample.negative
@@ -239,10 +251,22 @@ def semanticConstraints(solver, sketch, sample):
     if sketch._isBinary():
         semanticConstraints(solver, sketch.left, sample)
         semanticConstraints(solver, sketch.right, sample)
-# --------------------------------------------------------------------------------------------------- TODO
+# ---------------------------------------------------------------------------------------------------
 
 
 def semanticConstraints_BMC(solver, sketch, sample):
+    """ Adds the semantic constraints to the solver for the BMC heuristic
+
+        Parameters
+        ----------
+        solver : Z3.Solver
+            The solver containing a conjunction of constraints defined in the paper
+        sketch : Sketch
+            The sketch for which the constraints should be defined
+        sample : Sample
+            The sample for which the constraints should be defined
+    """
+
     label = sketch.getLabel()
     node_id = sketch.identifier
     traces = sample.positive + sample.negative
@@ -548,10 +572,26 @@ def semanticConstraints_BMC(solver, sketch, sample):
     if sketch._isBinary():
         semanticConstraints_BMC(solver, sketch.left, sample)
         semanticConstraints_BMC(solver, sketch.right, sample)
-# --------------------------------------------------------------------------------------------------- TODO
+# ---------------------------------------------------------------------------------------------------
 
 
 def semanticConstraints_suffix(solver, sketch, sample_table, suffix_table, letter2pos):
+    """ Adds the semantic constraints to the solver for the suffix heuristic
+
+        Parameters
+        ----------
+        solver : Z3.Solver
+            The solver containing a conjunction of constraints defined in the paper
+        sketch : Sketch
+            The sketch for which the constraints should be defined
+        sample_table : List
+            The table representing the prefixes in the suffix heuristic
+        suffix_table : List
+            The table representing the suffixes in the suffix heuristic
+        letter2pos : Dictionary
+            A dictionary mapping the attomic propositions to their position in an element of the trace
+    """
+
     label = sketch.getLabel()
     node_id = sketch.identifier
 
@@ -1141,10 +1181,26 @@ def semanticConstraints_suffix(solver, sketch, sample_table, suffix_table, lette
     if sketch._isBinary():
         semanticConstraints_suffix(solver, sketch.left, sample_table, suffix_table, letter2pos)
         semanticConstraints_suffix(solver, sketch.right, sample_table, suffix_table, letter2pos)
-# --------------------------------------------------------------------------------------------------- TODO
+# ---------------------------------------------------------------------------------------------------
 
 
 def semanticConstraints_suffix_BMC(solver, sketch, sample_table, suffix_table, letter2pos):
+    """ Adds the semantic constraints to the solver if both BMC and suffix heuristic are used
+
+        Parameters
+        ----------
+        solver : Z3.Solver
+            The solver containing a conjunction of constraints defined in the paper
+        sketch : Sketch
+            The sketch for which the constraints should be defined
+        sample_table : List
+            The table representing the prefixes in the suffix heuristic
+        suffix_table : List
+            The table representing the suffixes in the suffix heuristic
+        letter2pos : Dictionary
+            A dictionary mapping the attomic propositions to their position in an element of the trace
+    """
+
     label = sketch.getLabel()
     node_id = sketch.identifier
 
@@ -1752,10 +1808,22 @@ def semanticConstraints_suffix_BMC(solver, sketch, sample_table, suffix_table, l
     if sketch._isBinary():
         semanticConstraints_suffix_BMC(solver, sketch.left, sample_table, suffix_table, letter2pos)
         semanticConstraints_suffix_BMC(solver, sketch.right, sample_table, suffix_table, letter2pos)
-# --------------------------------------------------------------------------------------------------- TODO
+# ---------------------------------------------------------------------------------------------------
 
 
 def semanticConstraints_cycle_free(solver, node_list, sample):
+    """ Adds the semantic constraints to the solver for the cycle free approach
+
+        Parameters
+        ----------
+        solver : Z3.Solver
+            The solver containing a conjunction of constraints defined in the paper
+        node_list : List
+            A list of all nodes (i.e., their ID) in the sketch
+        sample : Sample
+            The sample for which the constraints should be defined
+    """
+
     traces = sample.positive + sample.negative
 
     for node in node_list:
@@ -1963,10 +2031,26 @@ def semanticConstraints_cycle_free(solver, node_list, sample):
                             )
                         )
                     )
-# --------------------------------------------------------------------------------------------------- TODO
+# ---------------------------------------------------------------------------------------------------
 
 
 def semanticConstraints_cycle_free_suffix(solver, node_list, sample_table, suffix_table, letter2pos):
+    """ Adds the semantic constraints to the solver for the cycle free approach when also using the suffix heuristic
+
+        Parameters
+        ----------
+        solver : Z3.Solver
+            The solver containing a conjunction of constraints defined in the paper
+        node_list : List
+            A list of all nodes (i.e., their ID) in the sketch
+        sample_table : List
+            The list representing the sample in the suffix heuristic
+        suffix_table : List
+            The list representing the suffixes in the suffix heuristic
+        letter2pos : Dictionary
+            A dictionary mapping the atomic propositions to their position in the elements of the Trace
+    """
+
     for node in node_list:
         label = node.getLabel()
         node_id = node.identifier
@@ -2515,10 +2599,22 @@ def semanticConstraints_cycle_free_suffix(solver, node_list, sample_table, suffi
                                 )
                             )
                         )
-# --------------------------------------------------------------------------------------------------- TODO
+# ---------------------------------------------------------------------------------------------------
 
 
 def semanticConstraints_cycle_free_BMC(solver, node_list, sample):
+    """ Adds the semantic constraints to the solver for the cycle free approach when also using the BMC heuristic
+
+        Parameters
+        ----------
+        solver : Z3.Solver
+            The solver containing a conjunction of constraints defined in the paper
+        node_list : List
+            A list of all nodes (i.e., their ID) in the sketch
+        sample : Sample
+            The sample for which the constraints should be defined
+    """
+
     traces = sample.positive + sample.negative
 
     for node in node_list:
@@ -2795,48 +2891,28 @@ def semanticConstraints_cycle_free_BMC(solver, node_list, sample):
                                 )
                             )
                         )
-# --------------------------------------------------------------------------------------------------- TODO
 
-
-def consistencyConstraints(solver, root_id, sample):
-    """
-	Adds consistency constraints for given sample to solver
-	"""
-    s = solver
-    for number in range(sample.num_positives):
-        s.add(
-            Bool('z_%s_%s_0' % (root_id, number)) == True
-        )
-    for number in range(sample.num_negatives):
-        s.add(
-            Bool('z_%s_%s_0' % (root_id, sample.num_positives + number)) == False
-        )
-# --------------------------------------------------------------------------------------------------- TODO
-
-
-def consistencyConstraints_suffix(s, root_id, sample_table, num_positive):
-    for example in sample_table:
-        if len(example["prefix"]) == 0:
-            id = example["sid"]
-            pos = example["startpos"]
-        else:
-            id = example["id"]
-            pos = 0
-
-        if example["id"] < num_positive:
-            # word is positive
-            s.add(
-                Bool('z_%s_%s_%s' % (root_id, id, pos))
-            )
-        else:
-            # word is negative
-            s.add(
-                Not(Bool('z_%s_%s_%s' % (root_id, id, pos)))
-            )
-# --------------------------------------------------------------------------------------------------- TODO
+# ---------------------------------------------------------------------------------------------------
 
 
 def semanticConstraints_cycle_free_suffix_BMC(solver, node_list, sample_table, suffix_table, letter2pos):
+    """ Adds the semantic constraints to the solver for the cycle free approach when also using both 
+        the BMC and the suffix heuristic
+
+            Parameters
+            ----------
+            solver : Z3.Solver
+                The solver containing a conjunction of constraints defined in the paper
+            node_list : List
+                A list of all nodes (i.e., their ID) in the sketch
+            sample_table : list
+                Th list representing the sample in the suffix heuristic
+            suffix_table : List
+                The list representing the suffixes in the suffix heuristic
+            letter2pos : Dictionary
+                A dictionary mapping each atomic proposition to its position in the elements of the Trace
+    """
+
     for node in node_list:
         label = node.getLabel()
         node_id = node.identifier
@@ -3398,13 +3474,83 @@ def semanticConstraints_cycle_free_suffix_BMC(solver, node_list, sample_table, s
                                 )
                             )
                         )
-# --------------------------------------------------------------------------------------------------- TODO
+# ---------------------------------------------------------------------------------------------------
+
+
+def consistencyConstraints(solver, root_id, sample):
+    """ Adds the consistency constraints to the solver
+
+        Parameters
+        ----------
+        solver : Z3.Solver
+            The solver containing a conjunction of constraints defined in the paper
+        root_id
+            The ID of the root node
+        sample : Sample
+            The sample for which the constraints should be defined
+    """
+
+    s = solver
+    for number in range(sample.num_positives):
+        s.add(
+            Bool('z_%s_%s_0' % (root_id, number)) == True
+        )
+    for number in range(sample.num_negatives):
+        s.add(
+            Bool('z_%s_%s_0' % (root_id, sample.num_positives + number)) == False
+        )
+# ---------------------------------------------------------------------------------------------------
+
+
+def consistencyConstraints_suffix(s, root_id, sample_table, num_positive):
+    """ Adds the consistency constraints to the solver for the suffix heuristic
+
+        Parameters
+        ----------
+        s : Z3.Solver
+            The solver containing a conjunction of constraints defined in the paper
+        root_id
+            The ID of the root node
+        sample_table : List
+            The list representing the sample in the suffix heuristic
+        num_positive : int
+            The number of positive words in the sample
+    """
+
+    for example in sample_table:
+        if len(example["prefix"]) == 0:
+            id = example["sid"]
+            pos = example["startpos"]
+        else:
+            id = example["id"]
+            pos = 0
+
+        if example["id"] < num_positive:
+            # word is positive
+            s.add(
+                Bool('z_%s_%s_%s' % (root_id, id, pos))
+            )
+        else:
+            # word is negative
+            s.add(
+                Not(Bool('z_%s_%s_%s' % (root_id, id, pos)))
+            )
+# ---------------------------------------------------------------------------------------------------
 
 
 def placeholderConstraints(solver, sketch, nodes):
+    """ Adds constraints to solver which ensure that type-1/-2 placeholders are substituted with the same operator
+
+        Parameters
+        ----------
+        solver : Z3.Solver
+            The solver containing a conjunction of constraints defined in the paper
+        sketch : Sketch
+            (Subgraph of ) the sketch for which the constraints are constructed
+        nodes : List
+            The list of nodes (i.e., their ID) which are labeled with a type-1/-2 placeholder
     """
-	Adds constraints to solver which ensure that type-1/-2 placeholders are substituted with the same operator
-	"""
+
     s = solver
 
     placeholder = sketch.label
@@ -3441,13 +3587,22 @@ def placeholderConstraints(solver, sketch, nodes):
     if sketch._isBinary():
         placeholderConstraints(s, sketch.left, nodes)
         placeholderConstraints(s, sketch.right, nodes)
-# --------------------------------------------------------------------------------------------------- TODO
+# ---------------------------------------------------------------------------------------------------
 
 
 def suffixConstraints(solver, sketch, sample):
+    """ Adds constraints to solver which ensure that equal suffixes have to evaluate the same in the placeholder-0-nodes
+
+        Parameters
+        ----------
+        solver : Z3.Solver
+            The solver containing a conjunction of constraints defined in the paper
+        sketch : Sketch
+            (Subgraph of ) the sketch for which the constraints are constructed
+        sample : Sample
+            The Sample for which the constraints are constructed
     """
-    Adds constraints to solver which ensure that equal suffixes have to evaluate the same in the placeholder-0-nodes
-    """
+
     placeholderPositions = sketch.get_type0Positions()
 
     if len(placeholderPositions) > 0:
@@ -3469,10 +3624,20 @@ def suffixConstraints(solver, sketch, sample):
                                     ]
                                 )
                             )
-# --------------------------------------------------------------------------------------------------- TODO
+# ---------------------------------------------------------------------------------------------------
 
 
 def structureConstraints(solver, sketch):
+    """ Adds constraints to solver which ensure that the structure of the formula follows the structure of the sketch
+
+        Parameters
+        ----------
+        solver : Z3.Solver
+            The solver containing a conjunction of constraints defined in the paper
+        sketch : Sketch
+            (Subgraph of ) the sketch for which the constraints are constructed
+    """
+
     label = sketch.getLabel()
     node_id = sketch.identifier
 
@@ -3498,10 +3663,25 @@ def structureConstraints(solver, sketch):
                 Bool('r_%s_%s' % (node_id, sketch.right.identifier))
             )
             structureConstraints(solver, sketch.right)
-# --------------------------------------------------------------------------------------------------- TODO
+# ---------------------------------------------------------------------------------------------------
 
 
 def structureConstraints_cycle_free(solver, sketch_nodes, parent_nodes, possible_labels):
+    """ Adds constraints to solver which ensure that the structure of the formula follows the structure of the sketch
+        for the cycle free approach
+
+        Parameters
+        ----------
+        solver : Z3.Solver
+            The solver containing a conjunction of constraints defined in the paper
+        sketch_nodes : List (of Nodes)
+            List of nodes in the sketch which do not have a type-0 placeholder as a child
+        parent_nodes : List (of Nodes)
+            List of nodes in the sketch which do have a type-0 placeholder as a child
+        possible_labels : List
+            The list of all labels (i.e., operators). This is typically [!,|,&,->,X,F,G,U] + the alphabet.
+    """
+
     nodes = sketch_nodes + parent_nodes
     id_list = [node.identifier for node in nodes]
     for node in sketch_nodes:
@@ -3645,14 +3825,22 @@ def structureConstraints_cycle_free(solver, sketch_nodes, parent_nodes, possible
                         for rightid in id_list if rightid != node.right.identifier
                     ]
                 )
-# --------------------------------------------------------------------------------------------------- TODO
+# ---------------------------------------------------------------------------------------------------
 
 
 def cycleConstraints(solver, identifier_list, alphabet):
-    """
-    Adds constraints to the solver, which ensure that the sketch corresponding to a satisfying model does not contain a
-    cycle. The idea is to use a set of path variables p_i_j which indicate that there is a path from i to j in the sense
-    that j is in (one of) the subtree(s) of i. Then p_i_i has to be False for all i.
+    """ Adds constraints to the solver, which ensure that the sketch corresponding to a satisfying model does not
+        contain a cycle. The idea is to use a set of path variables p_i_j which indicate that there is a path
+        from i to j in the sense that j is in (one of) the subtree(s) of i. Then p_i_i has to be False for all i.
+
+        Parameters
+        ----------
+        solver : Z3.Solver
+            The solver containing a conjunction of constraints defined in the paper
+        alphabet : List
+            The alphabet of the sample, i.e., the list of all symbols occurring in the sample
+        identifier_list : List
+            The list of all IDs which occur in the sketch (Due to renaming this may not be the list [1, ..., n])
     """
 
     unary = ['!', 'X', 'G', 'F']
@@ -3754,15 +3942,29 @@ def cycleConstraints(solver, identifier_list, alphabet):
             [Not(Bool('p_%s_%s' % (id, id))) for id in identifier_list]
         )
     )
-# --------------------------------------------------------------------------------------------------- TODO
+# ---------------------------------------------------------------------------------------------------
 
 
 def initial_cycleConstraints(solver, sketch_nodes, parent_nodes, alphabet):
+    """ Initializes the cycle constraints, i.e. add constraints to the solver, which ensure that the sketch
+        corresponding to a satisfying model does not contain a cycle. The idea is to use a set of path
+        variables p_i_j which indicate that there is a path from i to j in the sense that j is in (one of)
+        the subtree(s) of i. Then p_i_i has to be False for all i.
+
+        This is used if the constraints are build iteratively instead of building them from scratch in each iteration.
+
+        Parameters
+        ----------
+        solver : Z3.Solver
+            The solver containing a conjunction of constraints defined in the paper
+        alphabet : List
+            The alphabet of the sample, i.e., the list of all symbols occurring in the sample
+        sketch_nodes : List (of Nodes)
+            The list of nodes in the sketch which do not have a type-0 placeholder as their child
+        parent_nodes : List (of Nodes)
+            The list of nodes in the sketch which do have a type-0 placeholder as their child
     """
-    Adds constraints to the solver, which ensure that the sketch corresponding to a satisfying model does not contain a
-    cycle. The idea is to use a set of path variables p_i_j which indicate that there is a path from i to j in the sense,
-    that j is in (one of) the subtree(s) of i. Then p_i_i has to be False for all i.
-    """
+
     identifier_list = [node.identifier for node in sketch_nodes] + [node.identifier for node in parent_nodes]
 
     unary = ['!', 'X', 'G', 'F']
@@ -3868,15 +4070,33 @@ def initial_cycleConstraints(solver, sketch_nodes, parent_nodes, alphabet):
             [Not(Bool('p_%s_%s' % (id, id))) for id in identifier_list]
         )
     )
-# --------------------------------------------------------------------------------------------------- TODO
+# ---------------------------------------------------------------------------------------------------
 
 
 def loop_cycleConstraints(solver, parent_nodes, additional_node_ids, new_node_id, identifier_list, alphabet):
+    """ Adds constraints to the solver, which ensure that the sketch corresponding to a satisfying model
+        does not contain a cycle. The idea is to use a set of path variables p_i_j which indicate that there
+        is a path from i to j in the sense that j is in (one of) the subtree(s) of i.
+        Then p_i_i has to be False for all i.
+
+        This is used if the constraints are build iteratively instead of building them from scratch in each iteration.
+
+        Parameters
+        ----------
+        solver : Z3.Solver
+            The solver containing a conjunction of constraints defined in the paper
+        alphabet : List
+            The alphabet of the sample, i.e., the list of all symbols occurring in the sample
+        parent_nodes : List (of Nodes)
+            The list of nodes in the sketch which do have a type-0 placeholder as their child
+        additional_node_ids : List
+            The list of IDs of the nodes 'added' to the sketch when constructing a solution
+        new_node_id : int
+            The ID of the node which was 'added' in this iteration
+        identifier_list : List
+            The list of all IDs occurring in the sketch (Due to renaming this may not be the list [1, ..., n])
     """
-    Adds constraints to the solver, which ensure that the sketch corresponding to a satisfying model does not contain a
-    cycle. The idea is to use a set of path variables p_i_j which indicate that there is a path from i to j in the sense,
-    that j is in (one of) the subtree(s) of i. Then p_i_i has to be False for all i.
-    """
+
     unary = ['!', 'X', 'G', 'F']
     binary = ['&', '|', '->', 'U']
 

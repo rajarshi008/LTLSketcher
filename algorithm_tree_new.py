@@ -11,6 +11,19 @@ build_solution = global_variables.build_solution
 
 
 def check_existence_tree(sample, sketch):
+    """ Checks whether there exists a consistent substitution for the given sketch and sample.
+        If build_solution is set to true it also computes and outputs such a solution.
+        It uses none of the heuristics.
+
+        Parameters
+        ----------
+        sample : Sample
+            The set of traces for which existence of a solution should be checked
+
+        sketch : Sketch
+            The sketch for which existence of a solution should be checked
+    """
+
     s = Solver()
 
     semanticConstraints(s, sketch, sample)
@@ -24,10 +37,28 @@ def check_existence_tree(sample, sketch):
             build_solution_tree(sketch, sample, maximumSize)
     else:
         print("UNSAT")
-# --------------------------------------------------------------------------------------------------- TODO
+# ---------------------------------------------------------------------------------------------------
 
 
 def build_solution_tree(sketch, sample, finalSize):
+    """ For the given sketch and sample it computes and outputs a consistent substitution,
+        if one exists resulting in a formula of size smaller finalSize
+        It uses none of the heuristics.
+
+        If print_model is set to true it also writes the model to a file 'solution.txt'
+
+        Parameters
+        ----------
+        sample : Sample
+            The set of traces for which a solution should be computed
+
+        sketch : Sketch
+            The sketch for which a solution should be computed
+
+        finalSize : int
+            An upper bound on the size of the solution
+    """
+
     solver_1 = Solver()
 
     # change type0 placeholders to highest identifiers in sketch
@@ -48,7 +79,7 @@ def build_solution_tree(sketch, sample, finalSize):
     if len(type_0_nodes) > 0:
         last_node_id = type_0_nodes[-1]
     else:
-        last_node_id = num_nodes -1       # There is no type-0 placeholder
+        last_node_id = num_nodes - 1       # There is no type-0 placeholder
     prev_last_node_id = -1
 
     operators = sample.operators
@@ -56,7 +87,7 @@ def build_solution_tree(sketch, sample, finalSize):
     possible_labels = operators + alphabet
     traces = sample.positive + sample.negative
 
-    # initialize all type-0 placeholder but the last one (will be leaf)
+    # initialize all type-0 placeholder but the last one (will be a leaf)
     # consider them as additional nodes
     for id in additional_nodes:
         # at least one label among all labels (operators + alphabet)
@@ -271,14 +302,14 @@ def build_solution_tree(sketch, sample, finalSize):
                                 )
                             )
                         )
-# ---------------------------------------- TODO
+# ----------------------------------------
     # start looping
     while num_nodes < finalSize:
         if print_output:
             print('looking for formula of size', num_nodes)
 
         solver_2 = Solver()
-        # ---------------------------------------- TODO
+        # ----------------------------------------
         # last node is leaf. Only necessary if there is at least one type-0 placeholder
         if last_node_id != num_nodes - 1:
             id = last_node_id
@@ -329,7 +360,7 @@ def build_solution_tree(sketch, sample, finalSize):
                                     Not(Bool('z_%s_%s_%s' % (id, j, k)))
                                 )
                             )
-# --------------------------- TODO
+# ---------------------------
         # previously last node:
         # need to initialize all Constraints for this node:
         if prev_last_node_id != -1:
@@ -518,10 +549,10 @@ def build_solution_tree(sketch, sample, finalSize):
                             )
                         )
                     )
-# --------------------------- TODO
+# ---------------------------
         # all other nodes
         # it suffices to add:
-        # - the at least one Constraints on the children to solver_2,
+        # - the 'at least one' Constraints on the children to solver_2,
         # - the at most one containing the new last node to solver_1
         # - and the evaluation with the new last node as one of the children also to solver_1
         for id in additional_nodes:
@@ -778,7 +809,7 @@ def build_solution_tree(sketch, sample, finalSize):
                                     )
                                 )
                             )
-# --------------------------- TODO
+# ---------------------------
         # Construct solver s = s1 + s2
         solver = Solver()
         solver.add(solver_1.assertions())
@@ -799,7 +830,7 @@ def build_solution_tree(sketch, sample, finalSize):
             typ1_ids = sketch.get_type1Positions()
             typ2_ids = sketch.get_type2Positions()
 
-            # type 1 and 2 can be apply directly by chancing the label
+            # type 1 and 2 can be applied directly by chancing the label
             substitutions = []
             for id in typ1_ids:
                 sub = (id, [op for op in ['!', 'X', 'G', 'F'] if z3.is_true(m[z3.Bool('x_%s_%s' % (id, op))])][0])
@@ -829,7 +860,7 @@ def build_solution_tree(sketch, sample, finalSize):
         else:
             if prev_last_node_id != -1:
                 additional_nodes.append(prev_last_node_id)
-            if last_node_id != num_nodes -1:
+            if last_node_id != num_nodes - 1:
                 prev_last_node_id = last_node_id
                 last_node_id += 1
                 num_nodes += 1
@@ -838,6 +869,3 @@ def build_solution_tree(sketch, sample, finalSize):
             if print_output:
                 print('No solution found up to size', finalSize)
 # ---------------------------------------------------------------------------------------------------
-
-
-

@@ -12,11 +12,20 @@ build_solution = global_variables.build_solution
 
 
 def check_existence_tree_bmc(sample, sketch):
+    """ Checks whether there exists a consistent substitution for the given sketch and sample.
+        If build_solution is set to true it also computes and outputs such a solution.
+        For both it uses the BMC heuristic.
+
+        Parameters
+        ----------
+        sample : Sample
+            The set of traces for which existence of a solution should be checked
+
+        sketch : Sketch
+            The sketch for which existence of a solution should be checked
+    """
     
     s = Solver()
-
-    #print('Inside algo', sketch)
-    #print('Inside algo', len(sample.positive), len(sample.negative))
 
     semanticConstraints_BMC(s, sketch, sample)
     consistencyConstraints(s, sketch.identifier, sample)
@@ -24,17 +33,35 @@ def check_existence_tree_bmc(sample, sketch):
     suffixConstraints(s, sketch, sample)
 
     if s.check() == z3.sat:
-        #print("SAT")
+        if print_output:
+            print("SAT")
         if build_solution:
-            #print(maximumSize)
             build_solution_tree_bmc(sketch, sample, maximumSize)
     else:
-        print("UNSAT")
-# --------------------------------------------------------------------------------------------------- TODO
+        if print_output:
+            print("UNSAT")
+# ---------------------------------------------------------------------------------------------------
 
 
 def build_solution_tree_bmc(sketch, sample, finalSize):
-    
+    """ For the given sketch and sample it computes and outputs a consistent substitution,
+        if one exists resulting in a formula of size smaller finalSize
+        It uses the BMC heuristic.
+
+        If print_model is set to true it also writes the model to a file 'solution.txt'
+
+        Parameters
+        ----------
+        sample : Sample
+            The set of traces for which a solution should be computed
+
+        sketch : Sketch
+            The sketch for which a solution should be computed
+
+        finalSize : int
+            An upper bound on the size of the solution
+    """
+
     solver_1 = Solver()
 
     # change type0 placeholders to highest identifiers in sketch
@@ -55,17 +82,16 @@ def build_solution_tree_bmc(sketch, sample, finalSize):
     if len(type_0_nodes) > 0:
         last_node_id = type_0_nodes[-1]
     else:
-        last_node_id = num_nodes -1       # There is no type-0 placeholder
+        last_node_id = num_nodes - 1       # There is no type-0 placeholder
     prev_last_node_id = -1
 
     operators = sample.operators
     alphabet = sample.alphabet
 
-
     possible_labels = operators + alphabet
     traces = sample.positive + sample.negative
 
-    # initialize all type-0 placeholder but the last one (will be leaf)
+    # initialize all type-0 placeholder but the last one (will be a leaf)
     # consider them as additional nodes
     for id in additional_nodes:
         # at least one label among all labels (operators + alphabet)
@@ -328,15 +354,14 @@ def build_solution_tree_bmc(sketch, sample, finalSize):
                                     )
                                 )
                             )
-# ---------------------------------------- TODO
+# ----------------------------------------
     # start looping
     while num_nodes < finalSize:
         if print_output:
-            pass
-            #print('looking for formula of size', num_nodes)
+            print('looking for formula of size', num_nodes)
 
         solver_2 = Solver()
-        # ---------------------------------------- TODO
+        # ----------------------------------------
         # last node is leaf. Only necessary if there is at least one type-0 placeholder
         if last_node_id != num_nodes - 1:
             id = last_node_id
@@ -624,10 +649,10 @@ def build_solution_tree_bmc(sketch, sample, finalSize):
                                 )
                             )
                         )
-# -------------------------- TODO
+# ---------------------------------------------------------
         # all other nodes
         # it suffices to add:
-        # - the at least one Constraints on the children to solver_2,
+        # - the 'at least one' Constraints on the children to solver_2,
         # - the at most one containing the new last node to solver_1
         # - and the evaluation with the new last node as one of the children also to solver_1
         for id in additional_nodes:
@@ -972,7 +997,7 @@ def build_solution_tree_bmc(sketch, sample, finalSize):
             typ1_ids = sketch.get_type1Positions()
             typ2_ids = sketch.get_type2Positions()
 
-            # type 1 and 2 can be apply directly by chancing the label
+            # type 1 and 2 can be applied directly by chancing the label
             substitutions = []
             for id in typ1_ids:
                 sub = (id, [op for op in ['!', 'X', 'G', 'F'] if z3.is_true(m[z3.Bool('x_%s_%s' % (id, op))])][0])
@@ -995,11 +1020,9 @@ def build_solution_tree_bmc(sketch, sample, finalSize):
             cLTL.reduce()
 
             if print_output:
-                #print('After algo', cLTL.prettyPrint())
-                #printprint(cLTL.prettyPrint(True))
-                #print(sample.isFormulaConsistent(cLTL))
+                print(cLTL.prettyPrint(True))
+                print(sample.isFormulaConsistent(cLTL))
 
-                return cLTL
             break
         else:
             if prev_last_node_id != -1:
@@ -1014,6 +1037,3 @@ def build_solution_tree_bmc(sketch, sample, finalSize):
                 print('No solution found up to size', finalSize)
                 return None
 # ---------------------------------------------------------------------------------------------------
-
-
-

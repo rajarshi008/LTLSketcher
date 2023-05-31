@@ -1,6 +1,0 @@
-graphviz
-lark 
-z3-solver
-pytictoc
-hiredis
-IPython
