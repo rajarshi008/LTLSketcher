@@ -1,0 +1,43 @@
+Original Formula,Sketch,Final Formula,Sample name,Num positives negatives,CEG loops,Total time,Learning time,CE Gen time,Sample size,Repetitions
+(G (! p)),G(!(?1)),,experiment_results/sample_info/aux8.trace,"[1.0, 1.0]",1.0,0.12009873391,0.09676702022,0.0,4.0,10
+(G (p & ((! q) -> ((! q) U (r & (! q)))))),?1,,experiment_results/sample_info/aux37.trace,"[7.0, 8.0]",8.0,1833.8109474182,1833.5754289627,0.0282859802,38.0,1
+((F q) -> (p U q)),?1,,experiment_results/sample_info/aux22.trace,"[1.3, 1.3]",1.4,6.570884561530001,6.538051629060002,0.0007225036600000001,6.8,10
+(G (q -> (G (! p)))),"G(->(q, G(?1)))",,experiment_results/sample_info/aux14.trace,"[1.1, 1.1]",1.1,0.26536507606000004,0.23955304624,0.00018470287000000001,4.4,10
+(G (q -> (G p))),"G(?b1(q, G(p)))",,experiment_results/sample_info/aux21.trace,"[1.0, 1.0]",1.0,0.16875393392,0.14193396569,0.0,4.0,10
+((F q) -> (p U q)),"->(?1,?2)",,experiment_results/sample_info/aux23.trace,"[1.2, 1.1]",1.2,2.4684158802100002,2.44033625126,0.00031752586,5.9,10
+(G (p & ((! q) -> ((! q) U (r & (! q)))))),"G(&(p,->(!(q),U(!(q), ?1))))",,experiment_results/sample_info/aux41.trace,"[1.0, 1.2]",1.2,2.1799990653899997,2.13833551406,0.00054059029,4.5,10
+(G (! p)),G(?1),,experiment_results/sample_info/aux7.trace,"[1.0, 1.0]",1.0,0.20504617689000004,0.18215179444000004,0.0,4.0,10
+(G (q -> (G p))),"G(->(q,?1))",,experiment_results/sample_info/aux19.trace,"[1.2, 1.2]",1.3,0.48625082971,0.45490283967,0.00048046111999999996,5.0,10
+(G (q -> (G (! p)))),"G(?b1(q, G(!(p))))",,experiment_results/sample_info/aux15.trace,"[1.0, 1.0]",1.0,0.14789760113,0.1260381937,0.0,4.0,10
+(F p),?1,,experiment_results/sample_info/aux0.trace,"[1.2, 1.0]",1.2,0.30164940357000003,0.27537767886000003,0.00015895367,4.6,10
+((F q) -> ((! p) U q)),?1,,experiment_results/sample_info/aux27.trace,"[1.6, 1.4]",1.6,23.353212571140002,23.31120889187,0.0017894267999999998,8.3,10
+((G (! p)) | (F (p & (F q)))),"|(G(!(p)),F(&(p,?1)))",,experiment_results/sample_info/aux36.trace,"[1.1, 1.0]",1.1,0.30551478864,0.27841863633,0.00016610622,4.3,10
+(G (p & ((! q) -> ((! q) U (r & (! q)))))),G(?1),,experiment_results/sample_info/aux38.trace,"[1.6, 1.7]",1.9,225.50501224995,225.45885777474004,0.0033692359899999995,7.5,10
+((F q) -> ((! p) U q)),"->(F(q),?b1(!(p),q))",,experiment_results/sample_info/aux31.trace,"[1.1, 1.1]",1.2,0.30097670556,0.265980196,0.00026807785,5.6,10
+((F q) -> ((! p) U q)),"->(F(q),?1)",,experiment_results/sample_info/aux29.trace,"[1.3, 1.2]",1.4,3.43451437951,3.3983220100500007,0.00114631653,6.7,10
+((F q) -> ((! p) U q)),"->(F(q),U(?1,q))",,experiment_results/sample_info/aux30.trace,"[1.1, 1.0]",1.1,0.32257452012,0.29374110697999994,0.00012440681,5.3,10
+(G (! p)),?u1(!(p)),,experiment_results/sample_info/aux9.trace,"[1.0, 1.0]",1.0,0.12423760889999999,0.09911978245,0.0,4.0,10
+(G (q -> (G p))),G(?1),,experiment_results/sample_info/aux17.trace,"[1.3, 1.2]",1.4,2.84416496754,2.8103200674100006,0.000583601,5.2,10
+((F q) -> (p U q)),"->(F(q),U(p,?1))",,experiment_results/sample_info/aux25.trace,"[1.1, 1.1]",1.1,0.18454122544,0.15821475983000002,0.0002212286,5.6,10
+(G (q -> (G (! p)))),"G(->(?1,?2))",,experiment_results/sample_info/aux12.trace,"[1.2, 1.4]",1.4,3.9054295539899995,3.8692636489899996,0.0011587619800000001,5.7,10
+((F q) -> (p U q)),"->(F(q),?b1(p,q))",,experiment_results/sample_info/aux26.trace,"[1.1, 1.1]",1.2,0.26283392906,0.23182063103,0.00026171208,5.6,10
+((F q) -> (p U q)),"->(F(q),?1)",,experiment_results/sample_info/aux24.trace,"[1.2, 1.1]",1.2,1.12979223729,1.1001321077300001,0.00032510757,5.9,10
+((G (! p)) | (F (p & (F q)))),"|(G(!(p)),?1)",,experiment_results/sample_info/aux33.trace,"[1.6, 1.2]",1.6,12.816011166590002,12.77643532753,0.00126185418,6.6,10
+((F q) -> ((! p) U q)),"->(?1,?2)",,experiment_results/sample_info/aux28.trace,"[1.4, 1.3]",1.4,8.753319811830002,8.71910214424,0.0010587930699999999,7.2,10
+(G (p & ((! q) -> ((! q) U (r & (! q)))))),"G(&(p,->(!(q),?1)))",,experiment_results/sample_info/aux40.trace,"[1.4, 1.2]",1.6,9.8854249239,9.83597879409,0.0014417409900000001,5.8,10
+(G (q -> (G (! p)))),G(?1),,experiment_results/sample_info/aux11.trace,"[1.3, 1.3]",1.5,6.436230373379999,6.40147478582,0.0009462833399999999,5.6,10
+((G (! p)) | (F (p & (F q)))),"|(?1,F(&(p, F(q))))",,experiment_results/sample_info/aux34.trace,"[1.1, 1.1]",1.1,0.69428789617,0.66747026444,0.0003862381,4.5,10
+((G (! p)) | (F (p & (F q)))),?1,,experiment_results/sample_info/aux32.trace,"[1.7, 1.5]",1.8,77.56157462597,77.51394197940002,0.00183608532,7.7,10
+(G (q -> (G (! p)))),"G(->(q,?1))",,experiment_results/sample_info/aux13.trace,"[1.1, 1.1]",1.2,0.73530712127,0.70623795987,0.00019273758000000002,4.5,10
+(F p),F(?1),,experiment_results/sample_info/aux1.trace,"[1.0, 1.0]",1.0,0.10173602104000001,0.07622375490000001,0.0,4.0,10
+(G p),?u1(p),,experiment_results/sample_info/aux5.trace,"[1.0, 1.0]",1.0,0.11566126347999998,0.09158062934,0.0,4.0,10
+(G p),G(?1),,experiment_results/sample_info/aux4.trace,"[1.0, 1.0]",1.0,0.09822242261,0.07572309970999999,0.0,4.0,10
+(G (q -> (G (! p)))),?1,,experiment_results/sample_info/aux10.trace,"[1.3, 1.6]",1.7,25.006112384780003,24.933128619179993,0.0011317253100000002,6.8,10
+(G (q -> (G p))),?1,,experiment_results/sample_info/aux16.trace,"[1.5, 1.5]",1.6,11.549045133590003,11.510358619680002,0.00123820305,6.9,10
+(G (p & ((! q) -> ((! q) U (r & (! q)))))),"G(&(p,?1))",,experiment_results/sample_info/aux39.trace,"[1.4, 1.3]",1.6,18.97956457139,18.93815340995,0.0016756773000000003,6.0,10
+(F p),?u1(p),,experiment_results/sample_info/aux2.trace,"[1.1, 1.0]",1.1,0.15826942921999998,0.13074555398,6.85215e-05,4.3,10
+(G (! p)),?1,,experiment_results/sample_info/aux6.trace,"[1.0, 1.1]",1.1,0.5489760398900001,0.52314167022,5.631447e-05,4.3,10
+(G (q -> (G p))),"G(->(?1,?2))",,experiment_results/sample_info/aux18.trace,"[1.1, 1.1]",1.2,0.7556639194400001,0.72739994526,0.00021290779,4.5,10
+(G (q -> (G p))),"G(->(q, G(?1)))",,experiment_results/sample_info/aux20.trace,"[1.0, 1.0]",1.0,0.11850156784999999,0.09104464055,0.0,4.0,10
+(G p),?1,,experiment_results/sample_info/aux3.trace,"[1.0, 1.1]",1.1,0.24721918105999996,0.22336084843000004,5.5313110000000005e-05,4.3,10
+((G (! p)) | (F (p & (F q)))),"|(G(!(p)),F(?1))",,experiment_results/sample_info/aux35.trace,"[1.2, 1.1]",1.3,2.53713061809,2.5028566598900004,0.00051691532,5.0,10
